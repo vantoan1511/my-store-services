@@ -1,4 +1,4 @@
-package com.mystore.service;
+package com.mystore.service.productservice;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
