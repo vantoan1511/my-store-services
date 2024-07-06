@@ -1,4 +1,4 @@
-package com.mystore.service.user;
+package com.mystore.service.user.entity;
 
 import jakarta.ws.rs.QueryParam;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 public class UserSortingCriteria {
 
     @QueryParam("sortBy")
-    private SortingField field = SortingField.FIRST_NAME;
+    private UserSortingField field = UserSortingField.FIRST_NAME;
 
     @QueryParam("descending")
     private boolean descending;

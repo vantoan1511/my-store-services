@@ -1,5 +1,6 @@
-package com.mystore.service.user;
+package com.mystore.service.user.entity;
 
+import com.mystore.service.user.PageRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

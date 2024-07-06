@@ -1,8 +1,10 @@
-package com.mystore.service.user;
+package com.mystore.service.user.entity;
+
+import com.mystore.service.user.entity.UserInfo;
 
 import java.util.Comparator;
 
-public enum SortingField implements Comparator<UserInfo> {
+public enum UserSortingField implements Comparator<UserInfo> {
 
     FIRST_NAME,
     LAST_NAME {
@@ -30,7 +32,7 @@ public enum SortingField implements Comparator<UserInfo> {
         }
     };
 
-    SortingField() {
+    UserSortingField() {
     }
 
     @Override

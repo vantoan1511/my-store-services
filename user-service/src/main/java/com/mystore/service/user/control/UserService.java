@@ -1,5 +1,10 @@
-package com.mystore.service.user;
+package com.mystore.service.user.control;
 
+import com.mystore.service.user.*;
+import com.mystore.service.user.entity.PagedUserResponse;
+import com.mystore.service.user.entity.UserException;
+import com.mystore.service.user.entity.UserInfo;
+import com.mystore.service.user.entity.UserSortingCriteria;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;

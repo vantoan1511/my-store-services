@@ -1,5 +1,6 @@
 package com.mystore.service.user;
 
+import com.mystore.service.user.ErrorMessage;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

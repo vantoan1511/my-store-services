@@ -1,4 +1,4 @@
-package com.mystore.service.user;
+package com.mystore.service.user.entity;
 
 public enum Gender {
     MALE, FEMALE;
