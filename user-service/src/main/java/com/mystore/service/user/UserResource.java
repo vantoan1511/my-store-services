@@ -1,32 +1,28 @@
 package com.mystore.service.user;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-
-import java.util.List;
+import jakarta.ws.rs.core.Response;
 
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
-//@Authenticated
+@RolesAllowed({"ADMIN"})
 public class UserResource {
 
     @Inject
     UserService userService;
 
     @GET
-    public List<UserInfo> getAll() {
-        return userService.getAll();
+    public Response getAll(@BeanParam PageRequest pageRequest) {
+        return Response.ok().entity(userService.getAll(null, pageRequest)).build();
     }
 
     @GET
     @Path("/{id}")
-//    @RolesAllowed({"admin"})
-    public UserInfo getById(@PathParam("id") Long id) {
-        return userService.getById(id);
+    public Response getById(@PathParam("id") Long id) {
+        return Response.ok().entity(userService.getById(id)).build();
     }
 
 }

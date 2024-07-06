@@ -1,6 +1,7 @@
 package com.mystore.service.user;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
@@ -12,6 +13,15 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public PagedUserResponse getAll(UserSortingCriteria userSortingCriteria, @Valid PageRequest pageRequest) {
+        var users = userRepository.listAll();
+        var pagedUsers = users.stream()
+                .skip((pageRequest.getPage() - 1) * pageRequest.getSize())
+                .limit(pageRequest.getSize())
+                .toList();
+        return new PagedUserResponse((long) users.size(), (long) pagedUsers.size(), pageRequest.getPage(), pageRequest.getSize(), pagedUsers);
     }
 
     public UserInfo getById(Long id) {
@@ -31,10 +41,6 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(
                         () -> new UserException("User with EMAIL " + email + " not found.", Response.Status.NOT_FOUND));
-    }
-
-    public List<UserInfo> getAll() {
-        return userRepository.listAll();
     }
 
 }
