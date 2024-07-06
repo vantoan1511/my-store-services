@@ -15,8 +15,12 @@ public class UserResource {
     UserService userService;
 
     @GET
-    public Response getAll(@BeanParam PageRequest pageRequest) {
-        return Response.ok().entity(userService.getAll(null, pageRequest)).build();
+    public Response getAll(@BeanParam UserSortingCriteria sortingCriteria,
+                           @BeanParam PageRequest pageRequest) {
+        return Response
+                .ok()
+                .entity(userService.getAll(sortingCriteria, pageRequest))
+                .build();
     }
 
     @GET

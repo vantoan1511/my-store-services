@@ -1,6 +1,5 @@
 package com.mystore.service.user;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;

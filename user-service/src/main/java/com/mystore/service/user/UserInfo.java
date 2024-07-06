@@ -1,5 +1,6 @@
 package com.mystore.service.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
+public class UserInfo implements Comparable<UserInfo> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,4 +39,12 @@ public class UserInfo {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Override
+    public int compareTo(@Nullable UserInfo other) {
+        if (other == null) return 1;
+        if (other.firstName == null && this.firstName == null) return 0;
+        if (other.firstName == null) return 1;
+        if (this.firstName == null) return -1;
+        return this.firstName.compareTo(other.firstName);
+    }
 }

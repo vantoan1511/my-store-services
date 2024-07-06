@@ -17,11 +17,15 @@ public class UserService {
 
     public PagedUserResponse getAll(UserSortingCriteria userSortingCriteria, @Valid PageRequest pageRequest) {
         var users = userRepository.listAll();
-        var pagedUsers = users.stream()
-                .skip((pageRequest.getPage() - 1) * pageRequest.getSize())
-                .limit(pageRequest.getSize())
+        var sortedUsers = sort(users, userSortingCriteria);
+        return PagedUserResponse.from(sortedUsers, pageRequest);
+    }
+
+    private List<UserInfo> sort(List<UserInfo> users, UserSortingCriteria sortingCriteria) {
+        var sortedUsers = users.stream()
+                .sorted(sortingCriteria.getField())
                 .toList();
-        return new PagedUserResponse((long) users.size(), (long) pagedUsers.size(), pageRequest.getPage(), pageRequest.getSize(), pagedUsers);
+        return sortingCriteria.isDescending() ? sortedUsers.reversed() : sortedUsers;
     }
 
     public UserInfo getById(Long id) {
