@@ -1,11 +1,12 @@
-package com.mystore.service.user.control;
+package com.mystore.user.control;
 
-import com.mystore.service.user.*;
-import com.mystore.service.user.entity.PagedUserResponse;
-import com.mystore.service.user.entity.UserException;
-import com.mystore.service.user.entity.UserInfo;
-import com.mystore.service.user.entity.UserSortingCriteria;
+import com.mystore.user.PageRequest;
+import com.mystore.user.entity.PagedUserResponse;
+import com.mystore.user.UserException;
+import com.mystore.user.entity.UserInfo;
+import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 
@@ -14,11 +15,8 @@ import java.util.List;
 @ApplicationScoped
 public class UserService {
 
+    @Inject
     UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public PagedUserResponse getAll(UserSortingCriteria userSortingCriteria, @Valid PageRequest pageRequest) {
         var users = userRepository.listAll();
@@ -34,10 +32,8 @@ public class UserService {
     }
 
     public UserInfo getById(Long id) {
-        return userRepository
-                .findByIdOptional(id)
-                .orElseThrow(() ->
-                        new UserException("User with ID " + id + " not found.", Response.Status.NOT_FOUND));
+        return (UserInfo) UserInfo.findByIdOptional(id)
+                .orElseThrow(() -> new UserException("User with ID " + id + " not found", Response.Status.NOT_FOUND));
     }
 
     public UserInfo getByUsername(String username) {
@@ -52,4 +48,7 @@ public class UserService {
                         () -> new UserException("User with EMAIL " + email + " not found.", Response.Status.NOT_FOUND));
     }
 
+    public void save(UserInfo userInfo) {
+        UserInfo.save(userInfo);
+    }
 }

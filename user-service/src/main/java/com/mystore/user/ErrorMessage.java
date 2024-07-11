@@ -1,4 +1,4 @@
-package com.mystore.service.user;
+package com.mystore.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

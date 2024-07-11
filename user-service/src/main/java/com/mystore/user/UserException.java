@@ -1,4 +1,4 @@
-package com.mystore.service.user.entity;
+package com.mystore.user;
 
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.NotFoundException;

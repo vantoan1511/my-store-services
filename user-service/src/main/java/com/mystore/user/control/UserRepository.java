@@ -1,6 +1,6 @@
-package com.mystore.service.user.control;
+package com.mystore.user.control;
 
-import com.mystore.service.user.entity.UserInfo;
+import com.mystore.user.entity.UserInfo;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

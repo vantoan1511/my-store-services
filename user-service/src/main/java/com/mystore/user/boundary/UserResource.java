@@ -1,13 +1,14 @@
-package com.mystore.service.user.boundary;
+package com.mystore.user.boundary;
 
-import com.mystore.service.user.PageRequest;
-import com.mystore.service.user.control.UserService;
-import com.mystore.service.user.entity.UserSortingCriteria;
+import com.mystore.user.PageRequest;
+import com.mystore.user.control.UserService;
+import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,10 +21,7 @@ public class UserResource {
     @GET
     public Response getAll(@BeanParam UserSortingCriteria sortingCriteria,
                            @BeanParam PageRequest pageRequest) {
-        return Response
-                .ok()
-                .entity(userService.getAll(sortingCriteria, pageRequest))
-                .build();
+        return Response.ok().entity(userService.getAll(sortingCriteria, pageRequest)).build();
     }
 
     @GET

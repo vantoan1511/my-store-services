@@ -1,24 +1,23 @@
-package com.mystore.service.user.entity;
+package com.mystore.user.entity;
 
+import com.mystore.user.UserException;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import lombok.*;
 
 @Entity
-@Table(name = "USERS")
-@Data
+@Table(name = "users")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo implements Comparable<UserInfo> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private Long id;
+public class UserInfo extends PanacheEntity implements Comparable<UserInfo> {
 
     @Column(name = "first_name", length = 15)
     private String firstName;
@@ -39,6 +38,18 @@ public class UserInfo implements Comparable<UserInfo> {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column
+    @JoinColumn(name = "avatar_id")
+    private Long avatarId;
+
+    @Transactional
+    public static void save(UserInfo userInfo) {
+        UserInfo savedUserInfo = (UserInfo) findByIdOptional(userInfo.id)
+                .orElseThrow(() -> new UserException("Not found", Response.Status.NOT_FOUND));
+        savedUserInfo.setAvatarId(userInfo.getAvatarId());
+        savedUserInfo.persist();
+    }
+
     @Override
     public int compareTo(@Nullable UserInfo other) {
         if (other == null) return 1;
@@ -47,4 +58,5 @@ public class UserInfo implements Comparable<UserInfo> {
         if (this.firstName == null) return -1;
         return this.firstName.compareTo(other.firstName);
     }
+
 }

@@ -1,4 +1,4 @@
-package com.mystore.service.user;
+package com.mystore.user;
 
 import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.DefaultValue;

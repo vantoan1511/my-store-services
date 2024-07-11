@@ -1,6 +1,5 @@
-package com.mystore.service.user;
+package com.mystore.user;
 
-import com.mystore.service.user.ErrorMessage;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
