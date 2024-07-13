@@ -1,12 +1,13 @@
 package com.mystore.user.control;
 
 import com.mystore.user.PageRequest;
-import com.mystore.user.entity.PagedUserResponse;
 import com.mystore.user.UserException;
+import com.mystore.user.entity.PagedUserResponse;
 import com.mystore.user.entity.UserInfo;
 import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 
@@ -31,6 +32,14 @@ public class UserService {
         return sortingCriteria.isDescending() ? sortedUsers.reversed() : sortedUsers;
     }
 
+    @Transactional
+    public void update(Long id, Long avatarId) {
+        UserInfo userInfo = getById(id);
+        userInfo.setAvatarId(avatarId);
+        userInfo.persist();
+    }
+
+    @Transactional
     public UserInfo getById(Long id) {
         return (UserInfo) UserInfo.findByIdOptional(id)
                 .orElseThrow(() -> new UserException("User with ID " + id + " not found", Response.Status.NOT_FOUND));
@@ -51,4 +60,5 @@ public class UserService {
     public void save(UserInfo userInfo) {
         UserInfo.save(userInfo);
     }
+
 }

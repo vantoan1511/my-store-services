@@ -2,16 +2,17 @@ package com.mystore.user.avatar;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.ws.rs.core.UriInfo;
 import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
-import java.io.IOException;
+import java.net.URI;
 
 @Path("/api/avatars")
-@Slf4j
 public class AvatarResource {
 
     @Inject
@@ -19,17 +20,22 @@ public class AvatarResource {
 
     @GET
     @Path("{id}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getById(@RestForm Long id) {
-        return Response.ok().build();
+    @Produces({"image/jpeg"})
+    public Response getById(@RestPath Long id) {
+        var avatar = avatarService.getById(id);
+        return Response.ok(avatar.getData())
+                .header("Content-Disposition", "attachment; filename=\"" + avatar.getName() + "\"")
+                .build();
     }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response upload(@RestForm Long userId, @RestForm("avatar") FileUpload avatar) throws IOException {
-        avatarService.save(userId, avatar);
-        return Response.ok("Upload avatar successfully").build();
+    public Response upload(@RestForm Long userId,
+                           @RestForm("avatar") FileUpload avatar,
+                           @Context UriInfo uriInfo) {
+        Avatar savedAvatar = avatarService.save(userId, avatar);
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedAvatar.id.toString()).build();
+        return Response.created(uri).build();
     }
 
 }
