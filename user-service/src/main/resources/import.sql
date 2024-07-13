@@ -5,7 +5,7 @@ values (2, 'vlightowler1', 'Victor', 'Lightowler', 'vlightowler1@wix.com', 'MALE
 insert into users (id, username, first_name, last_name, email, gender, phone)
 values (3, 'dpiscot2', 'Diann', 'Piscot', 'dpiscot2@ebay.co.uk', 'FEMALE', '6933917520');
 insert into users (id, username, first_name, last_name, email, gender, phone)
-values (4, '', 'Cordy', 'Adamowitz', 'cadamowitz3@cloudflare.com', 'MALE', '9858026751');
+values (4, 'adamowitz2', 'Cordy', 'Adamowitz', 'cadamowitz3@cloudflare.com', 'MALE', '9858026751');
 insert into users (id, username, first_name, last_name, email, gender, phone)
 values (5, 'morleton4', '', 'Orleton', 'morleton4@mapquest.com', 'MALE', '4468824562');
 insert into users (id, username, first_name, last_name, email, gender, phone)
