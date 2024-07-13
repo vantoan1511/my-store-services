@@ -20,7 +20,7 @@ public class AvatarResource {
 
     @GET
     @Path("{id}")
-    @Produces({"image/jpeg"})
+    @Produces({"image/jpeg", "image/png"})
     public Response getById(@RestPath Long id) {
         var avatar = avatarService.getById(id);
         return Response.ok(avatar.getData())
