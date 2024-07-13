@@ -3,17 +3,28 @@ package com.mystore.user.control;
 import com.mystore.user.PageRequest;
 import com.mystore.user.UserException;
 import com.mystore.user.entity.PagedUserResponse;
+import com.mystore.user.entity.UserCreation;
 import com.mystore.user.entity.UserInfo;
 import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
 
 @ApplicationScoped
+@Slf4j
 public class UserService {
+
+    @Inject
+    Keycloak keycloak;
 
     public PagedUserResponse getAll(UserSortingCriteria userSortingCriteria, @Valid PageRequest pageRequest) {
         List<UserInfo> users = UserInfo.listAll();
@@ -52,6 +63,19 @@ public class UserService {
                 .firstResultOptional()
                 .orElseThrow(
                         () -> new UserException("User with EMAIL " + email + " not found.", Response.Status.NOT_FOUND));
+    }
+
+    public Response create(@Valid UserCreation userCreation) {
+        if (userCreation == null) {
+            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
+        }
+
+        UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
+
+        String realm = System.getenv().getOrDefault("KEYCLOAK_REALM", "master");
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        return usersResource.create(user);
     }
 
 }

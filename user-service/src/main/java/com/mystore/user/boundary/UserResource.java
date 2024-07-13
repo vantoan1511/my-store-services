@@ -2,13 +2,11 @@ package com.mystore.user.boundary;
 
 import com.mystore.user.PageRequest;
 import com.mystore.user.control.UserService;
+import com.mystore.user.entity.UserCreation;
 import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BeanParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestPath;
@@ -33,4 +31,10 @@ public class UserResource {
         return Response.ok(userService.getById(id)).build();
     }
 
+    @POST
+    @Path("/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(UserCreation userCreation) {
+        return userService.create(userCreation);
+    }
 }
