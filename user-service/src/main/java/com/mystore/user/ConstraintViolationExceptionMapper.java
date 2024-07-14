@@ -18,7 +18,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(","));
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorMessage(message))
+                .entity(new ErrorResponse(message))
                 .build();
     }
 }

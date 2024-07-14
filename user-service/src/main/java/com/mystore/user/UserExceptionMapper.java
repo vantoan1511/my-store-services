@@ -11,7 +11,7 @@ public class UserExceptionMapper implements ExceptionMapper<UserException> {
     @Override
     public Response toResponse(UserException exception) {
         return Response.status(exception.getResponse().getStatus())
-                .entity(new ErrorMessage(exception.getMessage()))
+                .entity(new ErrorResponse(exception.getMessage()))
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }

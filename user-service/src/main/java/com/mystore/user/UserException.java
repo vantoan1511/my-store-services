@@ -1,10 +1,9 @@
 package com.mystore.user;
 
-import jakarta.ws.rs.ClientErrorException;
-import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
-public class UserException extends ClientErrorException {
+public class UserException extends WebApplicationException {
 
     public UserException(String message, Response.Status status) {
         super(message, status);
