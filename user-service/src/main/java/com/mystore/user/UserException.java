@@ -9,9 +9,7 @@ public class UserException extends WebApplicationException {
         super(message, status);
     }
 
-    public UserException(String message, Response response) {
-        super(message, response);
+    public UserException(String message, int status) {
+        super(message, status);
     }
-
-
 }

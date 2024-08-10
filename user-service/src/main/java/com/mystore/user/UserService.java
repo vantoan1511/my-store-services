@@ -6,9 +6,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
 
@@ -18,22 +15,25 @@ import java.util.List;
 public class UserService {
 
     @Inject
-    Keycloak keycloak;
-
-    @Inject
     UserRepository userRepository;
 
-    public Response create(@Valid UserCreation userCreation) {
-        if (userCreation == null) {
-            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
+    @Inject
+    KeycloakService keycloakService;
+
+    public User register(@Valid UserCreation userCreation) {
+        linkToKeycloak(userCreation);
+        User newUser = UserMapper.toUser(userCreation);
+        userRepository.persist(newUser);
+        return newUser;
+    }
+
+    public void linkToKeycloak(UserCreation userCreation) {
+        try (Response response = keycloakService.create(userCreation)) {
+            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
+                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
+            }
         }
-
-        UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
-
-        String realm = System.getenv().getOrDefault("KEYCLOAK_REALM", "my-store");
-        UsersResource usersResource = keycloak.realm(realm).users();
-
-        return usersResource.create(user);
     }
 
     public PagedUserResponse getAll(UserSort userSort, @Valid PageRequest pageRequest) {

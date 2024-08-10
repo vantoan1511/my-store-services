@@ -24,4 +24,14 @@ public class UserMapper {
 
         return user;
     }
+
+    public static User toUser(UserCreation userCreation) {
+        User user = new User();
+        user.setUsername(userCreation.getUsername());
+        user.setEmail(userCreation.getEmail());
+        user.setFirstName(userCreation.getFirstName());
+        user.setLastName(userCreation.getLastName());
+        user.setGender(Gender.UNKNOWN);
+        return user;
+    }
 }

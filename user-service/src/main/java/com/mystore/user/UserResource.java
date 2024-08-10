@@ -3,9 +3,12 @@ package com.mystore.user;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.jboss.resteasy.reactive.RestPath;
+import jakarta.ws.rs.core.UriInfo;
+
+import java.net.URI;
 
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,7 +32,9 @@ public class UserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(UserCreation userCreation) {
-        return userService.create(userCreation);
+    public Response create(UserCreation userCreation, @Context UriInfo uriInfo) {
+        User savedUser = userService.register(userCreation);
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedUser.id.toString()).build();
+        return Response.created(uri).entity(savedUser).build();
     }
 }
