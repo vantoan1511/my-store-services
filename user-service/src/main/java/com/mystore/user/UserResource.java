@@ -1,9 +1,5 @@
-package com.mystore.user.boundary;
+package com.mystore.user;
 
-import com.mystore.user.PageRequest;
-import com.mystore.user.control.UserService;
-import com.mystore.user.entity.UserCreation;
-import com.mystore.user.entity.UserSortingCriteria;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -20,7 +16,7 @@ public class UserResource {
     UserService userService;
 
     @GET
-    public Response getAll(@BeanParam UserSortingCriteria sortingCriteria,
+    public Response getAll(@BeanParam UserSort sortingCriteria,
                            @BeanParam PageRequest pageRequest) {
         return Response.ok(userService.getAll(sortingCriteria, pageRequest)).build();
     }

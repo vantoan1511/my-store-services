@@ -1,4 +1,4 @@
-package com.mystore.user.entity;
+package com.mystore.user;
 
 public class UserFilterCriteria {
 }

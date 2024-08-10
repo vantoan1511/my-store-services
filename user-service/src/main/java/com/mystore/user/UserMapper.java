@@ -1,6 +1,5 @@
-package com.mystore.user.control;
+package com.mystore.user;
 
-import com.mystore.user.entity.UserCreation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
