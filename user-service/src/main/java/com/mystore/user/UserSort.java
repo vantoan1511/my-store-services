@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserSort {
 
-    @QueryParam("sortBy")
+    @QueryParam("sort_by")
     private UserSortField sortField = UserSortField.DEFAULT;
 
     @QueryParam("descending")
