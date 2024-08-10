@@ -23,12 +23,11 @@ public class UserResource {
 
     @GET
     @Path("{id}")
-    public Response getById(@RestPath Long id) {
+    public Response getById(@PathParam("id") Long id) {
         return Response.ok(userService.getById(id)).build();
     }
 
     @POST
-    @Path("/new")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(UserCreation userCreation) {
         return userService.create(userCreation);

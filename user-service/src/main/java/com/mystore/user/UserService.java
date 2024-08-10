@@ -23,6 +23,19 @@ public class UserService {
     @Inject
     UserRepository userRepository;
 
+    public Response create(@Valid UserCreation userCreation) {
+        if (userCreation == null) {
+            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
+        }
+
+        UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
+
+        String realm = System.getenv().getOrDefault("KEYCLOAK_REALM", "my-store");
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        return usersResource.create(user);
+    }
+
     public PagedUserResponse getAll(UserSort userSort, @Valid PageRequest pageRequest) {
         List<User> users = userRepository.listAll();
         List<User> sortedUsers = sort(users, userSort);
@@ -57,17 +70,5 @@ public class UserService {
                         new UserException("User with EMAIL " + email + " not found.", Response.Status.NOT_FOUND));
     }
 
-    public Response create(@Valid UserCreation userCreation) {
-        if (userCreation == null) {
-            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
-        }
-
-        UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
-
-        String realm = System.getenv().getOrDefault("KEYCLOAK_REALM", "master");
-        UsersResource usersResource = keycloak.realm(realm).users();
-
-        return usersResource.create(user);
-    }
 
 }
