@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,7 +11,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 @ApplicationScoped
 public class KeycloakService {
 
-    private static final String REALM = "my-store";
+    private static final String REALM = "shopbee";
+
     @Inject
     Keycloak keycloak;
 
@@ -21,9 +22,7 @@ public class KeycloakService {
         }
 
         UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
-
         UsersResource usersResource = keycloak.realm(REALM).users();
-
         return usersResource.create(user);
     }
 }

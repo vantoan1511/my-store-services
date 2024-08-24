@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -17,10 +17,18 @@ public class UserMapper {
         user.setCredentials(List.of(passwordCredential));
         user.setUsername(userCreation.getUsername());
         user.setEmail(userCreation.getEmail());
-        user.setFirstName(userCreation.getFirstName());
-        user.setLastName(userCreation.getLastName());
         user.setEnabled(userCreation.isEnabled());
         user.setEmailVerified(userCreation.isEmailVerified());
+
+        return user;
+    }
+
+    public static UserRepresentation toUserRepresentation(UserUpdate userUpdate) {
+        UserRepresentation user = new UserRepresentation();
+
+        user.setEmail(userUpdate.getEmail());
+        user.setEnabled(userUpdate.isEnabled());
+        user.setEmailVerified(userUpdate.isEmailVerified());
 
         return user;
     }

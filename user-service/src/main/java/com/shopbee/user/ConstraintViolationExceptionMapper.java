@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

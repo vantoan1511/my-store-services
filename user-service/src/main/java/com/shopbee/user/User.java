@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -45,6 +46,10 @@ public class User implements Comparable<User> {
     @Column(name = "created_at")
     @CreationTimestamp
     private Timestamp createdAt;
+
+    @Column(name = "modified_at")
+    @UpdateTimestamp
+    private Timestamp modifiedAt;
 
     @Override
     public int compareTo(@Nullable User other) {

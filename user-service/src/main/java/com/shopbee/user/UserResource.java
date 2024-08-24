@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -12,6 +12,7 @@ import java.net.URI;
 
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @RolesAllowed({"ADMIN"})
 public class UserResource {
 
@@ -31,10 +32,15 @@ public class UserResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response create(UserCreation userCreation, @Context UriInfo uriInfo) {
         User savedUser = userService.register(userCreation);
         URI uri = uriInfo.getAbsolutePathBuilder().path(savedUser.id.toString()).build();
         return Response.created(uri).entity(savedUser).build();
+    }
+
+    @PUT
+    @Path("{id}")
+    public Response update(@PathParam("id") Long id, UserUpdate userUpdate) {
+        return Response.ok(userService.update(id, userUpdate)).build();
     }
 }

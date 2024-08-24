@@ -1,4 +1,4 @@
-package com.mystore.user;
+package com.shopbee.user;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,6 +21,13 @@ public class UserService {
     KeycloakService keycloakService;
 
     public User register(@Valid UserCreation userCreation) {
+        userRepository.findByUsernameOrEmail(userCreation.getUsername(), userCreation.getEmail()).ifPresent((user) -> {
+            if (user.getUsername().equals(userCreation.getUsername())) {
+                throw new UserException("Username " + userCreation.getUsername() + " existed", Response.Status.CONFLICT);
+            }
+            throw new UserException("Email " + userCreation.getEmail() + " has associated with another account", Response.Status.CONFLICT);
+        });
+
         linkToKeycloak(userCreation);
         User newUser = UserMapper.toUser(userCreation);
         userRepository.persist(newUser);
@@ -34,6 +41,14 @@ public class UserService {
                 throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
             }
         }
+    }
+
+    public User update(Long id, @Valid UserUpdate userUpdate) {
+        User user = getById(id);
+        user.setFirstName(userUpdate.getFirstName());
+        user.setLastName(userUpdate.getLastName());
+        user.setEmail(userUpdate.getEmail());
+        return user;
     }
 
     public PagedUserResponse getAll(UserSort userSort, @Valid PageRequest pageRequest) {
