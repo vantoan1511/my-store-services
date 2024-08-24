@@ -19,17 +19,17 @@ public class UserMapper {
         user.setEmail(userCreation.getEmail());
         user.setEnabled(userCreation.isEnabled());
         user.setEmailVerified(userCreation.isEmailVerified());
+        user.setFirstName(userCreation.getFirstName());
+        user.setLastName(userCreation.getLastName());
 
         return user;
     }
 
     public static UserRepresentation toUserRepresentation(UserUpdate userUpdate) {
         UserRepresentation user = new UserRepresentation();
-
         user.setEmail(userUpdate.getEmail());
         user.setEnabled(userUpdate.isEnabled());
         user.setEmailVerified(userUpdate.isEmailVerified());
-
         return user;
     }
 

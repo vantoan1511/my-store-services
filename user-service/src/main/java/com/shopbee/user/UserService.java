@@ -20,53 +20,6 @@ public class UserService {
     @Inject
     KeycloakService keycloakService;
 
-    public User register(@Valid UserCreation userCreation) {
-        userRepository.findByUsernameOrEmail(userCreation.getUsername(), userCreation.getEmail()).ifPresent((user) -> {
-            if (user.getUsername().equals(userCreation.getUsername())) {
-                throw new UserException("Username " + userCreation.getUsername() + " existed", Response.Status.CONFLICT);
-            }
-            throw new UserException("Email " + userCreation.getEmail() + " has associated with another account", Response.Status.CONFLICT);
-        });
-
-        linkToKeycloak(userCreation);
-        User newUser = UserMapper.toUser(userCreation);
-        userRepository.persist(newUser);
-        return newUser;
-    }
-
-    public void linkToKeycloak(UserCreation userCreation) {
-        try (Response response = keycloakService.create(userCreation)) {
-            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
-                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
-                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
-            }
-        }
-    }
-
-    public User update(Long id, @Valid UserUpdate userUpdate) {
-        User user = getById(id);
-        user.setFirstName(userUpdate.getFirstName());
-        user.setLastName(userUpdate.getLastName());
-        user.setEmail(userUpdate.getEmail());
-        return user;
-    }
-
-    public PagedUserResponse getAll(UserSort userSort, @Valid PageRequest pageRequest) {
-        List<User> users = userRepository.listAll();
-        List<User> sortedUsers = sort(users, userSort);
-        return PagedUserResponse.from(sortedUsers, pageRequest);
-    }
-
-    private List<User> sort(List<User> users, UserSort userSort) {
-        List<User> sortedUsers = users.stream()
-                .sorted(userSort.getSortField().getComparator())
-                .toList();
-        if (userSort.isDescending()) {
-            return sortedUsers.reversed();
-        }
-        return sortedUsers;
-    }
-
     public User getById(Long id) {
         return userRepository.findByIdOptional(id)
                 .orElseThrow(() ->
@@ -85,5 +38,54 @@ public class UserService {
                         new UserException("User with EMAIL " + email + " not found.", Response.Status.NOT_FOUND));
     }
 
+    public PagedUserResponse getAll(UserSort userSort, @Valid PageRequest pageRequest) {
+        List<User> users = userRepository.listAll();
+        List<User> sortedUsers = sort(users, userSort);
+        return PagedUserResponse.from(sortedUsers, pageRequest);
+    }
+
+    private List<User> sort(List<User> users, UserSort userSort) {
+        List<User> sortedUsers = users.stream()
+                .sorted(userSort.getSortField().getComparator())
+                .toList();
+        if (userSort.isDescending()) {
+            return sortedUsers.reversed();
+        }
+        return sortedUsers;
+    }
+
+    public User update(Long id, @Valid UserUpdate userUpdate) {
+        User user = getById(id);
+        user.setFirstName(userUpdate.getFirstName());
+        user.setLastName(userUpdate.getLastName());
+        user.setEmail(userUpdate.getEmail());
+        return user;
+    }
+
+    public User register(@Valid UserCreation userCreation) {
+        validateUniqueUsernameAndEmail(userCreation.getUsername(), userCreation.getEmail());
+        linkNewUserToKeycloak(userCreation);
+        User newUser = UserMapper.toUser(userCreation);
+        userRepository.persist(newUser);
+        return newUser;
+    }
+
+    private void validateUniqueUsernameAndEmail(String username, String email) {
+        userRepository.findByUsernameOrEmail(username, email).ifPresent((user) -> {
+            if (user.getUsername().equals(username)) {
+                throw new UserException("Username " + username + " existed", Response.Status.CONFLICT);
+            }
+            throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
+        });
+    }
+
+    public void linkNewUserToKeycloak(UserCreation userCreation) {
+        try (Response response = keycloakService.create(userCreation)) {
+            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
+                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
+            }
+        }
+    }
 
 }
