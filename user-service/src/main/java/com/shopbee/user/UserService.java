@@ -55,11 +55,21 @@ public class UserService {
     }
 
     public User update(Long id, @Valid UserUpdate userUpdate) {
+        validateUniqueEmailUpdate(id, userUpdate.getEmail());
+
         User user = getById(id);
         user.setFirstName(userUpdate.getFirstName());
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
         return user;
+    }
+
+    private void validateUniqueEmailUpdate(Long id, String email) {
+        userRepository.findByEmail(email).ifPresent((user -> {
+            if (!user.getId().equals(id)) {
+                throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
+            }
+        }));
     }
 
     public User register(@Valid UserCreation userCreation) {

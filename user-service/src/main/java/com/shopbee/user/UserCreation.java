@@ -18,6 +18,7 @@ public class UserCreation {
     private String lastName;
 
     @Email(message = "Email must be valid")
+    @NotBlank(message = "Email is required")
     private String email;
 
     @NotBlank(message = "Username is required")

@@ -1,6 +1,7 @@
 package com.shopbee.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -16,6 +17,7 @@ public class UserUpdate {
     private String lastName;
 
     @Email(message = "Email must be valid")
+    @NotBlank(message = "Email is required")
     private String email;
 
     private boolean enabled;
