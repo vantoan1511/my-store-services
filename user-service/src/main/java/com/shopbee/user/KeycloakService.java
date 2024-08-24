@@ -20,14 +20,21 @@ public class KeycloakService {
     @Inject
     Keycloak keycloak;
 
-    public Response create(UserCreation userCreation) {
+    public void create(UserCreation userCreation) {
         if (userCreation == null) {
             throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
         }
 
         UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
         UsersResource usersResource = keycloak.realm(REALM).users();
-        return usersResource.create(user);
+        try (Response response = usersResource.create(user)) {
+            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
+                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
+            }
+        } catch (Exception e) {
+            throw new UserException("An error occurred from authentication server", Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public void update(String username, UserUpdate userUpdate) {
@@ -36,12 +43,14 @@ public class KeycloakService {
         userResource.update(user);
     }
 
-    public Response delete(String username) {
-        try {
-            UserRepresentation userRepresentation = getUserByUsername(username);
-            return getUsersResource().delete(userRepresentation.getId());
+    public void delete(String username) {
+        UserRepresentation userRepresentation = getUserByUsername(username);
+        try (Response response = getUsersResource().delete(userRepresentation.getId())) {
+            if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
+                throw new UserException("User does not associated with any Keycloak user", response.getStatus());
+            }
         } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UserException("An error occurred from authentication server", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

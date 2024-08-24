@@ -20,25 +20,17 @@ public class UserService {
     @Inject
     KeycloakService keycloakService;
 
-    public void resetPassword(Long id, PasswordReset passwordReset) {
-        keycloakService.resetPassword(getById(id).getUsername(), passwordReset);
-    }
-
     public void delete(List<Long> ids) {
         ids.forEach(this::delete);
     }
 
-    private void delete(Long id) {
-        invokeKeycloakUserDelete(this.getById(id).getUsername());
+    public void delete(Long id) {
+        keycloakService.delete(this.getById(id).getUsername());
         userRepository.delete("id", id);
     }
 
-    private void invokeKeycloakUserDelete(String username) {
-        try (Response response = keycloakService.delete(username)) {
-            if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
-                throw new UserException("User does not associated with any Keycloak user", response.getStatus());
-            }
-        }
+    public void resetPassword(Long id, PasswordReset passwordReset) {
+        keycloakService.resetPassword(getById(id).getUsername(), passwordReset);
     }
 
     public User getById(Long id) {
@@ -81,7 +73,7 @@ public class UserService {
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
 
-        invokeKeycloakUserUpdate(user.getUsername(), userUpdate);
+        keycloakService.update(user.getUsername(), userUpdate);
 
         return user;
     }
@@ -94,13 +86,15 @@ public class UserService {
         }));
     }
 
-    private void invokeKeycloakUserUpdate(String username, UserUpdate userUpdate) {
-        keycloakService.update(username, userUpdate);
-    }
-
     public User create(@Valid UserCreation userCreation) {
+        if (userCreation == null) {
+            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
+        }
+
         validateUniqueUsernameAndEmail(userCreation.getUsername(), userCreation.getEmail());
-        linkNewUserToKeycloak(userCreation);
+
+        keycloakService.create(userCreation);
+
         User newUser = UserMapper.toUser(userCreation);
         userRepository.persist(newUser);
         return newUser;
@@ -113,15 +107,6 @@ public class UserService {
             }
             throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
         });
-    }
-
-    private void linkNewUserToKeycloak(UserCreation userCreation) {
-        try (Response response = keycloakService.create(userCreation)) {
-            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
-                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
-                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
-            }
-        }
     }
 
 }
