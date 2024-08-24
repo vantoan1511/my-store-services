@@ -20,6 +20,10 @@ public class UserService {
     @Inject
     KeycloakService keycloakService;
 
+    public void resetPassword(Long id, PasswordReset passwordReset) {
+        keycloakService.resetPassword(getById(id).getUsername(), passwordReset);
+    }
+
     public void delete(List<Long> ids) {
         ids.forEach(this::delete);
     }
