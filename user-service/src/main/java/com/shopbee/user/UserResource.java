@@ -34,7 +34,7 @@ public class UserResource {
 
     @POST
     public Response create(UserCreation userCreation, @Context UriInfo uriInfo) {
-        User savedUser = userService.register(userCreation);
+        User savedUser = userService.create(userCreation);
         URI uri = uriInfo.getAbsolutePathBuilder().path(savedUser.id.toString()).build();
         return Response.created(uri).entity(savedUser).build();
     }

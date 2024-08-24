@@ -80,6 +80,9 @@ public class UserService {
         user.setFirstName(userUpdate.getFirstName());
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
+
+        invokeKeycloakUserUpdate(user.getUsername(), userUpdate);
+
         return user;
     }
 
@@ -91,7 +94,11 @@ public class UserService {
         }));
     }
 
-    public User register(@Valid UserCreation userCreation) {
+    private void invokeKeycloakUserUpdate(String username, UserUpdate userUpdate) {
+        keycloakService.update(username, userUpdate);
+    }
+
+    public User create(@Valid UserCreation userCreation) {
         validateUniqueUsernameAndEmail(userCreation.getUsername(), userCreation.getEmail());
         linkNewUserToKeycloak(userCreation);
         User newUser = UserMapper.toUser(userCreation);

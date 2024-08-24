@@ -2,7 +2,6 @@ package com.shopbee.user;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
@@ -21,7 +20,7 @@ public class KeycloakService {
     @Inject
     Keycloak keycloak;
 
-    public Response create(@Valid UserCreation userCreation) {
+    public Response create(UserCreation userCreation) {
         if (userCreation == null) {
             throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
         }
@@ -29,6 +28,12 @@ public class KeycloakService {
         UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
         UsersResource usersResource = keycloak.realm(REALM).users();
         return usersResource.create(user);
+    }
+
+    public void update(String username, UserUpdate userUpdate) {
+        UserResource userResource = getUserResourceByUsername(username);
+        UserRepresentation user = UserMapper.bind(getUserByUsername(username), userUpdate);
+        userResource.update(user);
     }
 
     public Response delete(String username) {

@@ -25,12 +25,13 @@ public class UserMapper {
         return user;
     }
 
-    public static UserRepresentation toUserRepresentation(UserUpdate userUpdate) {
-        UserRepresentation user = new UserRepresentation();
-        user.setEmail(userUpdate.getEmail());
-        user.setEnabled(userUpdate.isEnabled());
-        user.setEmailVerified(userUpdate.isEmailVerified());
-        return user;
+    public static UserRepresentation bind(UserRepresentation source, UserUpdate userUpdate) {
+        source.setFirstName(userUpdate.getFirstName());
+        source.setLastName(userUpdate.getLastName());
+        source.setEmail(userUpdate.getEmail());
+        source.setEnabled(userUpdate.isEnabled());
+        source.setEmailVerified(userUpdate.isEmailVerified());
+        return source;
     }
 
     public static User toUser(UserCreation userCreation) {
