@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
+import java.util.List;
 
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,5 +43,11 @@ public class UserResource {
     @Path("{id}")
     public Response update(@PathParam("id") Long id, UserUpdate userUpdate) {
         return Response.ok(userService.update(id, userUpdate)).build();
+    }
+
+    @DELETE
+    public Response delete(List<Long> ids) {
+        userService.delete(ids);
+        return Response.noContent().build();
     }
 }

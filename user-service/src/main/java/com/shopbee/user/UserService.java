@@ -20,6 +20,23 @@ public class UserService {
     @Inject
     KeycloakService keycloakService;
 
+    public void delete(List<Long> ids) {
+        ids.forEach(this::delete);
+    }
+
+    private void delete(Long id) {
+        invokeKeycloakUserDelete(this.getById(id).getUsername());
+        userRepository.delete("id", id);
+    }
+
+    private void invokeKeycloakUserDelete(String username) {
+        try (Response response = keycloakService.delete(username)) {
+            if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
+                throw new UserException("User does not associated with any Keycloak user", response.getStatus());
+            }
+        }
+    }
+
     public User getById(Long id) {
         return userRepository.findByIdOptional(id)
                 .orElseThrow(() ->
@@ -45,9 +62,7 @@ public class UserService {
     }
 
     private List<User> sort(List<User> users, UserSort userSort) {
-        List<User> sortedUsers = users.stream()
-                .sorted(userSort.getSortField().getComparator())
-                .toList();
+        List<User> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
         if (userSort.isDescending()) {
             return sortedUsers.reversed();
         }
@@ -89,7 +104,7 @@ public class UserService {
         });
     }
 
-    public void linkNewUserToKeycloak(UserCreation userCreation) {
+    private void linkNewUserToKeycloak(UserCreation userCreation) {
         try (Response response = keycloakService.create(userCreation)) {
             if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
                 ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);

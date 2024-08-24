@@ -39,6 +39,12 @@ public class User implements Comparable<User> {
     @Column(name = "phone", length = 10, unique = true)
     private String phone;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
