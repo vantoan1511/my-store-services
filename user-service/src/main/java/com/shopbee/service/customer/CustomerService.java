@@ -61,8 +61,7 @@ public class CustomerService {
     }
 
     public Customer register(@Valid CustomerRegistration customerRegistration) {
-        userService.validateUniqueUsernameAndEmail(customerRegistration.getUsername(), customerRegistration.getEmail());
-        keycloakService.create(UserMapper.toUserRepresentation(customerRegistration));
+        keycloakService.createUser(UserMapper.toUserRepresentation(customerRegistration));
         User user = UserMapper.toUser(customerRegistration);
         userRepository.persist(user);
         return UserMapper.toCustomer(user);

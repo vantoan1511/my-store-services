@@ -13,6 +13,9 @@ import java.util.Optional;
 
 public class UserMapper {
 
+    private UserMapper() {
+    }
+
     public static Customer toCustomer(User source) {
         return Optional.ofNullable(source)
                 .map(src -> Customer.builder()

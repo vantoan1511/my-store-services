@@ -1,5 +1,7 @@
 package com.shopbee.service.customer;
 
+import com.shopbee.service.UniqueEmail;
+import com.shopbee.service.UniqueUsername;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,10 +27,12 @@ public class CustomerRegistration {
 
     @NotBlank(message = "Username is required")
     @Size(max = 25, message = "Username must not exceed 25 characters of length")
+    @UniqueUsername
     private String username;
 
     @Email(message = "Email is invalid")
     @NotBlank(message = "Email is required")
+    @UniqueEmail
     private String email;
 
     @NotBlank(message = "Password is required")

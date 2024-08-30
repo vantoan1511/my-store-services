@@ -53,7 +53,7 @@ public class UserService {
             throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
         }
 
-        keycloakService.create(userCreation);
+        keycloakService.createUser(userCreation);
 
         User newUser = UserMapper.toUser(userCreation);
         userRepository.persist(newUser);
@@ -61,24 +61,21 @@ public class UserService {
     }
 
     public User update(Long id, UserUpdate userUpdate) {
-        User user = getById(id);
-
         validateUniqueEmailUpdate(id, userUpdate.getEmail());
-
+        User user = getById(id);
         user.setFirstName(userUpdate.getFirstName());
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
-
-        keycloakService.update(user.getUsername(), userUpdate);
+        keycloakService.updateUser(user.getUsername(), userUpdate);
         return user;
     }
 
     private void validateUniqueEmailUpdate(Long id, String email) {
-        userRepository.findByEmail(email).ifPresent((user -> {
+        userRepository.findByEmail(email).ifPresent(user -> {
             if (!user.getId().equals(id)) {
                 throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
             }
-        }));
+        });
     }
 
     public void resetPassword(Long id, PasswordReset passwordReset) {
