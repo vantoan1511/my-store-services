@@ -3,7 +3,6 @@ package com.shopbee.service.user;
 import com.shopbee.service.PageRequest;
 import com.shopbee.service.PasswordReset;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -17,11 +16,14 @@ import java.util.List;
 @Path("/api/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({Role.Constants.ADMIN_VALUE})
 public class UserResource {
 
-    @Inject
     UserService userService;
+
+    public UserResource(UserService userService) {
+        this.userService = userService;
+    }
 
     @GET
     public Response getAll(@BeanParam UserSort sortingCriteria,
