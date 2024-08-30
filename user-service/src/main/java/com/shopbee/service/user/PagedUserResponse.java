@@ -1,5 +1,6 @@
-package com.shopbee.user;
+package com.shopbee.service.user;
 
+import com.shopbee.service.PageRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.shopbee.user;
+package com.shopbee.service;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

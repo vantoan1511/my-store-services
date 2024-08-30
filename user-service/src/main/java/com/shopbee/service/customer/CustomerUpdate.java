@@ -1,16 +1,17 @@
-package com.shopbee.user;
+package com.shopbee.service.customer;
 
+import com.shopbee.service.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+@Builder
 @Getter
 @Setter
-public class UserCreation {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class CustomerUpdate {
     @Length(max = 15, message = "First name exceeds the max length of 15 characters")
     private String firstName;
 
@@ -21,15 +22,12 @@ public class UserCreation {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @NotBlank(message = "Username is required")
-    @Size(max = 25, message = "Username must not exceed 25 characters of length")
-    private String username;
+    @Length(max = 10, min = 10, message = "Phone number length is invalid")
+    private String phone;
 
-    @NotBlank(message = "Password is required")
-    private String password;
+    private String address;
 
-    private boolean enabled;
+    private String avatarUrl;
 
-    private boolean emailVerified;
-
+    private Gender gender;
 }

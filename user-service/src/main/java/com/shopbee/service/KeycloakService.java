@@ -1,5 +1,7 @@
-package com.shopbee.user;
+package com.shopbee.service;
 
+import com.shopbee.service.user.UserCreation;
+import com.shopbee.service.user.UserUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -20,20 +22,27 @@ public class KeycloakService {
     @Inject
     Keycloak keycloak;
 
+    public void create(UserRepresentation userRepresentation) {
+        try (Response response = getUsersResource().create(userRepresentation)) {
+            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+                ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
+                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
+            }
+        }
+    }
+
     public void create(UserCreation userCreation) {
         if (userCreation == null) {
             throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
         }
 
         UserRepresentation user = UserMapper.toUserRepresentation(userCreation);
-        UsersResource usersResource = keycloak.realm(REALM).users();
+        UsersResource usersResource = getUsersResource();
         try (Response response = usersResource.create(user)) {
             if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
                 ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
                 throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
             }
-        } catch (Exception e) {
-            throw new UserException("An error occurred from authentication server", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -49,8 +58,6 @@ public class KeycloakService {
             if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
                 throw new UserException("User does not associated with any Keycloak user", response.getStatus());
             }
-        } catch (Exception e) {
-            throw new UserException("An error occurred from authentication server", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

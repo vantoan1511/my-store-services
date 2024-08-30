@@ -1,4 +1,4 @@
-package com.shopbee.user;
+package com.shopbee.service;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;

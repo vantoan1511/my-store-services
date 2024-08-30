@@ -1,4 +1,4 @@
-package com.shopbee.user;
+package com.shopbee.service.user;
 
 import jakarta.ws.rs.QueryParam;
 import lombok.AllArgsConstructor;

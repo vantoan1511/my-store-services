@@ -1,4 +1,4 @@
-package com.shopbee.user;
+package com.shopbee.service.user;
 
 import lombok.Getter;
 

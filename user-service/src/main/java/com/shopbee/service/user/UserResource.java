@@ -1,7 +1,10 @@
-package com.shopbee.user;
+package com.shopbee.service.user;
 
+import com.shopbee.service.PageRequest;
+import com.shopbee.service.PasswordReset;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -33,21 +36,21 @@ public class UserResource {
     }
 
     @POST
-    public Response create(UserCreation userCreation, @Context UriInfo uriInfo) {
-        User savedUser = userService.create(userCreation);
-        URI uri = uriInfo.getAbsolutePathBuilder().path(savedUser.id.toString()).build();
+    public Response create(@Valid UserCreation userCreation, @Context UriInfo uriInfo) {
+        User savedUser = userService.createNew(userCreation);
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedUser.getId().toString()).build();
         return Response.created(uri).entity(savedUser).build();
     }
 
     @PUT
     @Path("{id}")
-    public Response update(@PathParam("id") Long id, UserUpdate userUpdate) {
+    public Response update(@PathParam("id") Long id, @Valid UserUpdate userUpdate) {
         return Response.ok(userService.update(id, userUpdate)).build();
     }
 
     @PUT
     @Path("{id}/reset-password")
-    public Response resetPassword(@PathParam("id") Long id, PasswordReset passwordReset) {
+    public Response resetPassword(@PathParam("id") Long id, @Valid PasswordReset passwordReset) {
         userService.resetPassword(id, passwordReset);
         return Response.noContent().build();
     }
