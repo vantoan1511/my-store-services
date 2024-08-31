@@ -60,14 +60,15 @@ public class UserService {
         return newUser;
     }
 
-    public User update(Long id, UserUpdate userUpdate) {
+    public void update(Long id, UserUpdate userUpdate) {
         validateUniqueEmailUpdate(id, userUpdate.getEmail());
+
         User user = getById(id);
         user.setFirstName(userUpdate.getFirstName());
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
+
         keycloakService.updateUser(user.getUsername(), userUpdate);
-        return user;
     }
 
     private void validateUniqueEmailUpdate(Long id, String email) {

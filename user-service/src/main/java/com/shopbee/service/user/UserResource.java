@@ -47,7 +47,8 @@ public class UserResource {
     @PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, @Valid UserUpdate userUpdate) {
-        return Response.ok(userService.update(id, userUpdate)).build();
+        userService.update(id, userUpdate);
+        return Response.noContent().build();
     }
 
     @PUT
