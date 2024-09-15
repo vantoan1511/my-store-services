@@ -61,7 +61,7 @@ public class CustomerService {
         if (passwordUpdate == null) {
             throw new UserException("Password update request is invalid", Response.Status.BAD_REQUEST);
         }
-        keycloakService.changePassword(username, passwordUpdate);
+        keycloakService.updatePassword(username, passwordUpdate);
     }
 
     private void validateUniqueEmailUpdate(String username, String email) {

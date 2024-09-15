@@ -50,6 +50,13 @@ public class UserResource {
         return Response.noContent().build();
     }
 
+    @PUT
+    @Path("{id}/reset-password")
+    public Response resetPassword(@PathParam("id") Long id, @Valid PasswordReset passwordReset) {
+        userService.resetPassword(id, passwordReset);
+        return Response.noContent().build();
+    }
+
     @DELETE
     public Response delete(List<Long> ids) {
         userService.delete(ids);

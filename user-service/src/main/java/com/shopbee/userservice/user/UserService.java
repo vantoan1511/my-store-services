@@ -22,7 +22,7 @@ public class UserService {
         this.keycloakService = keycloakService;
     }
 
-    public PagedResponse getAll(UserSort userSort, PageRequest pageRequest) {
+    public PagedResponse<User> getAll(UserSort userSort, PageRequest pageRequest) {
         List<User> users = userRepository.listAll();
         List<User> sortedUsers = sort(users, userSort);
         return PagedResponse.from(sortedUsers, pageRequest);
@@ -69,6 +69,11 @@ public class UserService {
         user.setEmail(userUpdate.getEmail());
 
         keycloakService.updateUser(user.getUsername(), userUpdate);
+    }
+
+    public void resetPassword(Long id, PasswordReset passwordReset) {
+        String username = getById(id).getUsername();
+        keycloakService.resetPassword(username, passwordReset);
     }
 
     private void validateUniqueEmailUpdate(Long id, String email) {

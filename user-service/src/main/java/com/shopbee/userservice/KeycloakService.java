@@ -1,6 +1,8 @@
 package com.shopbee.userservice;
 
 import com.shopbee.userservice.customer.CustomerRegistration;
+import com.shopbee.userservice.customer.PasswordUpdate;
+import com.shopbee.userservice.user.PasswordReset;
 import com.shopbee.userservice.user.UserCreation;
 import com.shopbee.userservice.user.UserUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,6 +11,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.common.util.CollectionUtil;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
@@ -57,6 +60,22 @@ public class KeycloakService {
                 throw new UserException("User does not associated with any Keycloak user", response.getStatus());
             }
         }
+    }
+
+    public void updatePassword(String username, PasswordUpdate passwordUpdate) {
+        PasswordReset passwordReset = new PasswordReset(passwordUpdate.getNewPassword(), false);
+        resetPassword(username, passwordReset);
+    }
+
+    public void resetPassword(String username, PasswordReset passwordReset) {
+        UserResource userResource = getUserResourceByUsername(username);
+
+        CredentialRepresentation passwordCredential = new CredentialRepresentation();
+        passwordCredential.setType(CredentialRepresentation.PASSWORD);
+        passwordCredential.setValue(passwordReset.getPassword());
+        passwordCredential.setTemporary(passwordReset.isTemporary());
+
+        userResource.resetPassword(passwordCredential);
     }
 
     private UserResource getUserResourceByUsername(String username) {
