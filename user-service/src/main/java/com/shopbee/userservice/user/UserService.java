@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
 
@@ -28,12 +29,10 @@ public class UserService {
         return PagedResponse.from(sortedUsers, pageRequest);
     }
 
-    private List<User> sort(List<User> users, UserSort userSort) {
-        List<User> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
-        if (userSort.isDescending()) {
-            return sortedUsers.reversed();
-        }
-        return sortedUsers;
+    public UserDetails getDetailsById(Long id) {
+        User user = getById(id);
+        UserRepresentation keycloakUser = keycloakService.getUserByUsername(user.getUsername());
+        return UserMapper.withAccountStatus(user, keycloakUser);
     }
 
     public User getById(Long id) {
@@ -74,6 +73,14 @@ public class UserService {
     public void resetPassword(Long id, PasswordReset passwordReset) {
         String username = getById(id).getUsername();
         keycloakService.resetPassword(username, passwordReset);
+    }
+
+    private List<User> sort(List<User> users, UserSort userSort) {
+        List<User> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
+        if (userSort.isDescending()) {
+            return sortedUsers.reversed();
+        }
+        return sortedUsers;
     }
 
     private void validateUniqueEmailUpdate(Long id, String email) {

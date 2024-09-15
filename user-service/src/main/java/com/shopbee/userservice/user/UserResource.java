@@ -33,7 +33,7 @@ public class UserResource {
     @GET
     @Path("{id}")
     public Response getById(@PathParam("id") Long id) {
-        return Response.ok(userService.getById(id)).build();
+        return Response.ok(userService.getDetailsById(id)).build();
     }
 
     @POST

@@ -4,6 +4,7 @@ import com.shopbee.userservice.customer.Customer;
 import com.shopbee.userservice.customer.CustomerRegistration;
 import com.shopbee.userservice.user.User;
 import com.shopbee.userservice.user.UserCreation;
+import com.shopbee.userservice.user.UserDetails;
 import com.shopbee.userservice.user.UserUpdate;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -14,6 +15,31 @@ import java.util.Optional;
 public class UserMapper {
 
     private UserMapper() {
+    }
+
+    public static UserDetails withAccountStatus(User user, UserRepresentation keycloakUser) {
+        UserDetails userDetails = UserMapper.toUserDetails(user);
+        userDetails.setEnabled(keycloakUser.isEnabled());
+        userDetails.setEmailVerified(keycloakUser.isEmailVerified());
+        return userDetails;
+    }
+
+    public static UserDetails toUserDetails(User source) {
+        return Optional.ofNullable(source)
+                .map(src -> UserDetails.builder()
+                        .firstName(src.getFirstName())
+                        .lastName(src.getLastName())
+                        .email(src.getEmail())
+                        .username(src.getUsername())
+                        .phone(src.getPhone())
+                        .address(src.getAddress())
+                        .gender(src.getGender())
+                        .avatarUrl(src.getAvatarUrl())
+                        .createdAt(src.getCreatedAt())
+                        .modifiedAt(src.getModifiedAt())
+                        .build())
+                .orElse(new UserDetails());
+
     }
 
     public static Customer toCustomer(User source) {

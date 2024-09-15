@@ -83,7 +83,7 @@ public class KeycloakService {
         return getUsersResource().get(userId);
     }
 
-    private UserRepresentation getUserByUsername(String username) {
+    public UserRepresentation getUserByUsername(String username) {
         List<UserRepresentation> users = getUsersResource().searchByUsername(username, true);
         if (CollectionUtil.isEmpty(users)) {
             throw new UserException("User with username " + username + " not found", Response.Status.NOT_FOUND);
