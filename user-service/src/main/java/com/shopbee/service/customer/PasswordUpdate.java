@@ -1,4 +1,4 @@
-package com.shopbee.service;
+package com.shopbee.service.customer;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -6,10 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PasswordReset {
-
+public class PasswordUpdate {
     @NotBlank(message = "Password is required")
-    private String password;
-
-    private boolean temporary;
+    private String newPassword;
 }

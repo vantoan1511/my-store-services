@@ -24,7 +24,6 @@ public class CustomerRegistration {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-
     @NotBlank(message = "Username is required")
     @Size(max = 25, message = "Username must not exceed 25 characters of length")
     @UniqueUsername

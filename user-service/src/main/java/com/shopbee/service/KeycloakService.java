@@ -1,5 +1,6 @@
 package com.shopbee.service;
 
+import com.shopbee.service.customer.CustomerRegistration;
 import com.shopbee.service.user.UserCreation;
 import com.shopbee.service.user.UserUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,7 +9,6 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.common.util.CollectionUtil;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
@@ -20,11 +20,8 @@ public class KeycloakService {
 
     private final Keycloak keycloak;
 
-    private final UsersResource usersResource;
-
     public KeycloakService(Keycloak keycloak) {
         this.keycloak = keycloak;
-        this.usersResource = keycloak.realm(REALM).users();
     }
 
     public void createUser(UserCreation userCreation) {
@@ -32,8 +29,14 @@ public class KeycloakService {
         createUser(user);
     }
 
+    public void createUser(CustomerRegistration customerRegistration) {
+        UserRepresentation user = UserMapper.toUserRepresentation(customerRegistration);
+        user.setEnabled(true);
+        createUser(user);
+    }
+
     public void createUser(UserRepresentation userRepresentation) {
-        try (Response response = usersResource.create(userRepresentation)) {
+        try (Response response = getUsersResource().create(userRepresentation)) {
             if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
                 ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
                 throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
@@ -49,35 +52,28 @@ public class KeycloakService {
 
     public void delete(String username) {
         String userId = getUserByUsername(username).getId();
-        try (Response response = usersResource.delete(userId)) {
+        try (Response response = getUsersResource().delete(userId)) {
             if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
                 throw new UserException("User does not associated with any Keycloak user", response.getStatus());
             }
         }
     }
 
-    public void resetPassword(String username, PasswordReset passwordReset) {
-        UserResource userResource = getUserResourceByUsername(username);
-
-        CredentialRepresentation passwordCredential = new CredentialRepresentation();
-        passwordCredential.setType(CredentialRepresentation.PASSWORD);
-        passwordCredential.setValue(passwordReset.getPassword());
-        passwordCredential.setTemporary(passwordReset.isTemporary());
-
-        userResource.resetPassword(passwordCredential);
-    }
-
     private UserResource getUserResourceByUsername(String username) {
         String userId = getUserByUsername(username).getId();
-        return usersResource.get(userId);
+        return getUsersResource().get(userId);
     }
 
     private UserRepresentation getUserByUsername(String username) {
-        List<UserRepresentation> users = usersResource.searchByUsername(username, true);
+        List<UserRepresentation> users = getUsersResource().searchByUsername(username, true);
         if (CollectionUtil.isEmpty(users)) {
             throw new UserException("User with username " + username + " not found", Response.Status.NOT_FOUND);
         }
         return users.getFirst();
+    }
+
+    private UsersResource getUsersResource() {
+        return keycloak.realm(REALM).users();
     }
 
 }

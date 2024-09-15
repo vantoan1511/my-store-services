@@ -46,7 +46,7 @@ public class User implements Comparable<User> {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private Gender gender = Gender.UNKNOWN;
 
     @Column(name = "created_at")
     @CreationTimestamp

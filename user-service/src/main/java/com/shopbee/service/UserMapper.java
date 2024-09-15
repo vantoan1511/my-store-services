@@ -43,11 +43,14 @@ public class UserMapper {
     public static UserRepresentation toUserRepresentation(UserCreation userCreation) {
         UserRepresentation user = new UserRepresentation();
 
-        CredentialRepresentation passwordCredential = new CredentialRepresentation();
-        passwordCredential.setType(CredentialRepresentation.PASSWORD);
-        passwordCredential.setValue(userCreation.getPassword());
+        Optional.ofNullable(userCreation.getPassword()).ifPresent(password -> {
+            CredentialRepresentation passwordCredential = new CredentialRepresentation();
+            passwordCredential.setType(CredentialRepresentation.PASSWORD);
+            passwordCredential.setValue(userCreation.getPassword());
+            passwordCredential.setTemporary(userCreation.isTemporary());
+            user.setCredentials(List.of(passwordCredential));
+        });
 
-        user.setCredentials(List.of(passwordCredential));
         user.setUsername(userCreation.getUsername());
         user.setEmail(userCreation.getEmail());
         user.setEnabled(userCreation.isEnabled());

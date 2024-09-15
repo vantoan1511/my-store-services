@@ -1,6 +1,9 @@
 package com.shopbee.service.user;
 
-import com.shopbee.service.*;
+import com.shopbee.service.KeycloakService;
+import com.shopbee.service.PageRequest;
+import com.shopbee.service.UserException;
+import com.shopbee.service.UserMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
@@ -79,18 +82,12 @@ public class UserService {
         });
     }
 
-    public void resetPassword(Long id, PasswordReset passwordReset) {
-        keycloakService.resetPassword(getById(id).getUsername(), passwordReset);
-    }
-
     public void delete(List<Long> ids) {
         ids.forEach(this::delete);
     }
 
     private void delete(Long id) {
-        User user = getById(id);
-        String username = user.getUsername();
-
+        String username = getById(id).getUsername();
         keycloakService.delete(username);
         userRepository.delete("id", id);
     }

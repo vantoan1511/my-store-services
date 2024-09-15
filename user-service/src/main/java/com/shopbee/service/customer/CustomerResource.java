@@ -1,8 +1,9 @@
 package com.shopbee.service.customer;
 
+import com.shopbee.service.auth.AuthenticationService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
-import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -17,8 +18,15 @@ import java.net.URI;
 @PermitAll
 public class CustomerResource {
 
-    @Inject
     CustomerService customerService;
+
+    AuthenticationService authenticationService;
+
+    public CustomerResource(CustomerService customerService,
+                            AuthenticationService authenticationService) {
+        this.customerService = customerService;
+        this.authenticationService = authenticationService;
+    }
 
     @GET
     @Path("{username}")
@@ -29,7 +37,7 @@ public class CustomerResource {
 
     @POST
     @PermitAll
-    public Response register(CustomerRegistration customerRegistration, @Context UriInfo uriInfo) {
+    public Response register(@Valid CustomerRegistration customerRegistration, @Context UriInfo uriInfo) {
         Customer customer = customerService.register(customerRegistration);
         URI uri = uriInfo.getAbsolutePathBuilder().path(customer.getUsername()).build();
         return Response.created(uri).entity(customerRegistration).build();
@@ -38,8 +46,18 @@ public class CustomerResource {
     @PUT
     @Path("{username}")
     @Authenticated
-    public Response updateProfile(@PathParam("username") String username, CustomerUpdate customerUpdate) {
+    public Response updateProfile(@PathParam("username") String username, @Valid CustomerUpdate customerUpdate) {
+        authenticationService.authenticate(username);
         customerService.updateProfile(username, customerUpdate);
+        return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("{username}/change-password")
+    @Authenticated
+    public Response changePassword(@PathParam("username") String username, @Valid PasswordUpdate passwordUpdate) {
+        authenticationService.authenticate(username);
+        customerService.updatePassword(username, passwordUpdate);
         return Response.noContent().build();
     }
 }

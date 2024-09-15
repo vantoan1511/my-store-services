@@ -6,6 +6,7 @@ import com.shopbee.service.UserMapper;
 import com.shopbee.service.user.User;
 import com.shopbee.service.user.UserRepository;
 import com.shopbee.service.user.UserService;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -21,19 +22,31 @@ public class CustomerService {
 
     KeycloakService keycloakService;
 
-    public CustomerService(UserRepository userRepository, UserService userService, KeycloakService keycloakService) {
+    SecurityIdentity securityIdentity;
+
+    public CustomerService(UserRepository userRepository,
+                           UserService userService,
+                           KeycloakService keycloakService,
+                           SecurityIdentity securityIdentity) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.keycloakService = keycloakService;
+        this.securityIdentity = securityIdentity;
     }
 
     public Customer getByUsername(String username) {
         return UserMapper.toCustomer(userService.getByUsername(username));
     }
 
+    public Customer register(CustomerRegistration customerRegistration) {
+        keycloakService.createUser(customerRegistration);
+        User user = UserMapper.toUser(customerRegistration);
+        userRepository.persist(user);
+        return UserMapper.toCustomer(user);
+    }
+
     public void updateProfile(String username, @Valid CustomerUpdate customerUpdate) {
-        //email, firstname, lastname, gender, phone, address, avatar
-        validateUniqueEmail(username, customerUpdate.getEmail());
+        validateUniqueEmailUpdate(username, customerUpdate.getEmail());
         User user = userService.getByUsername(username);
         user.setEmail(customerUpdate.getEmail());
         user.setFirstName(customerUpdate.getFirstName());
@@ -44,28 +57,19 @@ public class CustomerService {
         user.setPhone(customerUpdate.getPhone());
     }
 
-    private void validateUniqueEmail(String username, String email) {
+    public void updatePassword(String username, PasswordUpdate passwordUpdate) {
+        if (passwordUpdate == null) {
+            throw new UserException("Password update request is invalid", Response.Status.BAD_REQUEST);
+        }
+        keycloakService.changePassword(username, passwordUpdate);
+    }
+
+    private void validateUniqueEmailUpdate(String username, String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             if (!user.getUsername().equals(username)) {
                 throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
             }
         });
     }
-
-    public void updatePassword() {
-        //update pw
-    }
-
-    public void resetPassword() {
-        //forgot pw -> send email to reset pw
-    }
-
-    public Customer register(@Valid CustomerRegistration customerRegistration) {
-        keycloakService.createUser(UserMapper.toUserRepresentation(customerRegistration));
-        User user = UserMapper.toUser(customerRegistration);
-        userRepository.persist(user);
-        return UserMapper.toCustomer(user);
-    }
-
 
 }

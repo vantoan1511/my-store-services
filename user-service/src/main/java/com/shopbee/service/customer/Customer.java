@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
+    private Long id;
     private String firstName;
     private String lastName;
     private String username;

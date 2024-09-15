@@ -31,8 +31,9 @@ public class UserCreation {
     @UniqueUsername
     private String username;
 
-    @NotBlank(message = "Password is required")
     private String password;
+
+    private boolean temporary;
 
     private boolean enabled;
 

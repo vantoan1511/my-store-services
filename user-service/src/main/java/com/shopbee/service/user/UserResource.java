@@ -1,7 +1,6 @@
 package com.shopbee.service.user;
 
 import com.shopbee.service.PageRequest;
-import com.shopbee.service.PasswordReset;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -48,13 +47,6 @@ public class UserResource {
     @Path("{id}")
     public Response update(@PathParam("id") Long id, @Valid UserUpdate userUpdate) {
         userService.update(id, userUpdate);
-        return Response.noContent().build();
-    }
-
-    @PUT
-    @Path("{id}/reset-password")
-    public Response resetPassword(@PathParam("id") Long id, @Valid PasswordReset passwordReset) {
-        userService.resetPassword(id, passwordReset);
         return Response.noContent().build();
     }
 
