@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class UserDetails {
 
+    private Long id;
+
     private String firstName;
 
     private String lastName;

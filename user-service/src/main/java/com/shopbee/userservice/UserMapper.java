@@ -27,6 +27,7 @@ public class UserMapper {
     public static UserDetails toUserDetails(User source) {
         return Optional.ofNullable(source)
                 .map(src -> UserDetails.builder()
+                        .id(src.getId())
                         .firstName(src.getFirstName())
                         .lastName(src.getLastName())
                         .email(src.getEmail())
@@ -45,6 +46,7 @@ public class UserMapper {
     public static Customer toCustomer(User source) {
         return Optional.ofNullable(source)
                 .map(src -> Customer.builder()
+                        .id(src.getId())
                         .firstName(src.getFirstName())
                         .lastName(src.getLastName())
                         .email(src.getEmail())
