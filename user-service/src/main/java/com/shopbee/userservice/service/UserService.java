@@ -8,9 +8,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
@@ -26,12 +29,13 @@ public class UserService {
         this.keycloakService = keycloakService;
     }
 
-    public PagedResponse<UserDetails> getAll(UserSort userSort, PageRequest pageRequest) {
+    public PagedResponse<UserDetails> getByCriteria(UserFilter userFilter, UserSort userSort, PageRequest pageRequest) {
         List<UserDetails> users = UserMapper.toUserDetailsList(userRepository.listAll())
                 .stream()
                 .map(this::withUserStatus)
                 .toList();
-        List<UserDetails> sortedUsers = sort(users, userSort);
+        List<UserDetails> filteredUsers = applyFilter(users, userFilter);
+        List<UserDetails> sortedUsers = sort(filteredUsers, userSort);
         return PagedResponse.from(sortedUsers, pageRequest);
     }
 
@@ -79,6 +83,46 @@ public class UserService {
     public void resetPassword(Long id, PasswordReset passwordReset) {
         String username = getById(id).getUsername();
         keycloakService.resetPassword(username, passwordReset);
+    }
+
+    private List<UserDetails> applyFilter(List<UserDetails> users, UserFilter userFilter) {
+        if (ObjectUtils.allNull(userFilter.getKeyword(), userFilter.getEnabled(), userFilter.getEmailVerified())) {
+            return users;
+        }
+
+        return users.stream()
+                .filter(user -> matchKeyword(user, userFilter.getKeyword()))
+                .filter(user -> matchEnabled(user, userFilter.getEnabled()))
+                .filter(user -> matchEmailVerified(user, userFilter.getEmailVerified()))
+                .toList();
+    }
+
+    private boolean matchKeyword(UserDetails user, String keyword) {
+        if (StringUtils.isBlank(keyword)) {
+            return true;
+        }
+
+        StringBuilder lowerTextInfo = new StringBuilder(user.getUsername());
+        lowerTextInfo.append(user.getFirstName());
+        lowerTextInfo.append(user.getLastName());
+        lowerTextInfo.append(user.getEmail());
+        return lowerTextInfo.toString().toLowerCase().contains(keyword.toLowerCase());
+    }
+
+    private boolean matchEnabled(UserDetails user, Boolean enabled) {
+        if (enabled == null) {
+            return true;
+        }
+
+        return user.isEnabled() == enabled;
+    }
+
+    private boolean matchEmailVerified(UserDetails user, Boolean emailVerified) {
+        if (emailVerified == null) {
+            return true;
+        }
+
+        return user.isEmailVerified() == emailVerified;
     }
 
     private UserDetails withUserStatus(UserDetails userDetails) {

@@ -28,9 +28,10 @@ public class UserResource {
     }
 
     @GET
-    public Response getAll(@BeanParam UserSort sortingCriteria,
+    public Response getAll(@BeanParam UserFilter filterCriteria,
+                           @BeanParam UserSort sortingCriteria,
                            @BeanParam PageRequest pageRequest) {
-        return Response.ok(userService.getAll(sortingCriteria, pageRequest)).build();
+        return Response.ok(userService.getByCriteria(filterCriteria, sortingCriteria, pageRequest)).build();
     }
 
     @GET

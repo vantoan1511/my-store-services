@@ -4,10 +4,12 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <property name="author" value="shopbee"/>
-    <property name="id" value="us-user"/>
-
-    <include file="/db/0.0.1/changeLog.xml"/>
-    <include file="/db/0.0.2/changeLog.xml"/>
-    <include file="/db/0.0.3/changeLog.xml"/>
+    <changeSet author="${author}" id="${id}-1">
+        <addColumn tableName="us_user">
+            <column name="address1" type="TEXT"></column>
+            <column name="address2" type="TEXT"></column>
+            <column name="address3" type="TEXT"></column>
+            <column name="address4" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

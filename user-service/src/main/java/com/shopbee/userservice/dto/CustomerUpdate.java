@@ -26,6 +26,14 @@ public class CustomerUpdate {
 
     private String address;
 
+    private String address1;
+
+    private String address2;
+
+    private String address3;
+
+    private String address4;
+
     private String avatarUrl;
 
     private Gender gender;

@@ -54,7 +54,10 @@ public class CustomerService {
         user.setFirstName(customerUpdate.getFirstName());
         user.setLastName(customerUpdate.getLastName());
         user.setAddress(customerUpdate.getAddress());
-        user.setAvatarUrl(customerUpdate.getAvatarUrl());
+        user.setAddress1(customerUpdate.getAddress1());
+        user.setAddress2(customerUpdate.getAddress2());
+        user.setAddress3(customerUpdate.getAddress3());
+        user.setAddress4(customerUpdate.getAddress4());
         user.setGender(customerUpdate.getGender());
         user.setPhone(customerUpdate.getPhone());
     }
