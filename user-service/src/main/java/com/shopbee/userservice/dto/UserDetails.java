@@ -1,4 +1,4 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetails {
+public class UserDetails implements Comparable<UserDetails> {
 
     private Long id;
 
@@ -27,7 +28,13 @@ public class UserDetails {
 
     private String address;
 
-    private String avatarUrl;
+    private String address1;
+
+    private String address2;
+
+    private String address3;
+
+    private String address4;
 
     private Gender gender;
 
@@ -38,4 +45,11 @@ public class UserDetails {
     private boolean enabled;
 
     private boolean emailVerified;
+
+    @Override
+    public int compareTo(UserDetails other) {
+        if (other == null) return 1;
+        return Comparator.nullsFirst(Comparator.<Timestamp>naturalOrder())
+                .compare(this.createdAt, other.createdAt);
+    }
 }

@@ -1,5 +1,6 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.entity;
 
+import com.shopbee.userservice.dto.Gender;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 
 @Entity
-@Table(name = "users")
+@Table(name = "us_user")
 @Getter
 @Setter
 @Builder
@@ -19,7 +20,7 @@ import java.util.Comparator;
 public class User implements Comparable<User> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "first_name", length = 15)
@@ -39,9 +40,6 @@ public class User implements Comparable<User> {
 
     @Column(name = "address")
     private String address;
-
-    @Column(name = "avatar_url")
-    private String avatarUrl;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

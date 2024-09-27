@@ -1,8 +1,9 @@
 package com.shopbee.userservice.service;
 
+import com.shopbee.userservice.entity.User;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.model.*;
+import com.shopbee.userservice.dto.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
@@ -25,9 +26,12 @@ public class UserService {
         this.keycloakService = keycloakService;
     }
 
-    public PagedResponse<User> getAll(UserSort userSort, PageRequest pageRequest) {
-        List<User> users = userRepository.listAll();
-        List<User> sortedUsers = sort(users, userSort);
+    public PagedResponse<UserDetails> getAll(UserSort userSort, PageRequest pageRequest) {
+        List<UserDetails> users = UserMapper.toUserDetailsList(userRepository.listAll())
+                .stream()
+                .map(this::withUserStatus)
+                .toList();
+        List<UserDetails> sortedUsers = sort(users, userSort);
         return PagedResponse.from(sortedUsers, pageRequest);
     }
 
@@ -77,8 +81,15 @@ public class UserService {
         keycloakService.resetPassword(username, passwordReset);
     }
 
-    private List<User> sort(List<User> users, UserSort userSort) {
-        List<User> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
+    private UserDetails withUserStatus(UserDetails userDetails) {
+        UserRepresentation userKeycloak = keycloakService.getUserByUsername(userDetails.getUsername());
+        userDetails.setEnabled(userKeycloak.isEnabled());
+        userDetails.setEmailVerified(userKeycloak.isEmailVerified());
+        return userDetails;
+    }
+
+    private List<UserDetails> sort(List<UserDetails> users, UserSort userSort) {
+        List<UserDetails> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
         if (userSort.isDescending()) {
             return sortedUsers.reversed();
         }

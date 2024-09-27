@@ -2,12 +2,12 @@ package com.shopbee.userservice.service;
 
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.model.Customer;
-import com.shopbee.userservice.model.CustomerRegistration;
-import com.shopbee.userservice.model.CustomerUpdate;
-import com.shopbee.userservice.model.PasswordUpdate;
-import com.shopbee.userservice.model.User;
-import com.shopbee.userservice.model.UserRepository;
+import com.shopbee.userservice.dto.Customer;
+import com.shopbee.userservice.dto.CustomerRegistration;
+import com.shopbee.userservice.dto.CustomerUpdate;
+import com.shopbee.userservice.dto.PasswordUpdate;
+import com.shopbee.userservice.entity.User;
+import com.shopbee.userservice.dto.UserRepository;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

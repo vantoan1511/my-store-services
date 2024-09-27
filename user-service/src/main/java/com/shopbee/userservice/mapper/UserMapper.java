@@ -1,6 +1,7 @@
 package com.shopbee.userservice.mapper;
 
-import com.shopbee.userservice.model.*;
+import com.shopbee.userservice.entity.User;
+import com.shopbee.userservice.dto.*;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -10,6 +11,10 @@ import java.util.Optional;
 public class UserMapper {
 
     private UserMapper() {
+    }
+
+    public static List<UserDetails> toUserDetailsList(List<User> users) {
+        return users.stream().map(UserMapper::toUserDetails).toList();
     }
 
     public static UserDetails withAccountStatus(User user, UserRepresentation keycloakUser) {
@@ -30,7 +35,6 @@ public class UserMapper {
                         .phone(src.getPhone())
                         .address(src.getAddress())
                         .gender(src.getGender())
-                        .avatarUrl(src.getAvatarUrl())
                         .createdAt(src.getCreatedAt())
                         .modifiedAt(src.getModifiedAt())
                         .build())
@@ -49,7 +53,6 @@ public class UserMapper {
                         .phone(src.getPhone())
                         .address(src.getAddress())
                         .gender(src.getGender())
-                        .avatarUrl(src.getAvatarUrl())
                         .createdAt(src.getCreatedAt())
                         .modifiedAt(src.getModifiedAt())
                         .build())

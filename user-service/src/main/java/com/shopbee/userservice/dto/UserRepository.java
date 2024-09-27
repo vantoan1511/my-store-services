@@ -1,5 +1,6 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.dto;
 
+import com.shopbee.userservice.entity.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

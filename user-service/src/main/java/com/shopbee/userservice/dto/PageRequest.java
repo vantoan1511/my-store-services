@@ -1,4 +1,4 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.DefaultValue;

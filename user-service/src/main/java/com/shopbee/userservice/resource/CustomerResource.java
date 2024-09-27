@@ -1,9 +1,9 @@
 package com.shopbee.userservice.resource;
 
-import com.shopbee.userservice.model.Customer;
-import com.shopbee.userservice.model.CustomerRegistration;
-import com.shopbee.userservice.model.CustomerUpdate;
-import com.shopbee.userservice.model.PasswordUpdate;
+import com.shopbee.userservice.dto.Customer;
+import com.shopbee.userservice.dto.CustomerRegistration;
+import com.shopbee.userservice.dto.CustomerUpdate;
+import com.shopbee.userservice.dto.PasswordUpdate;
 import com.shopbee.userservice.service.AuthenticationService;
 import com.shopbee.userservice.service.CustomerService;
 import io.quarkus.security.Authenticated;
@@ -17,7 +17,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
 
-@Path("api/customers")
+@Path("customers")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @PermitAll

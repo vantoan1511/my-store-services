@@ -1,7 +1,7 @@
 package com.shopbee.userservice.validator;
 
 import com.shopbee.userservice.validator.constraint.UniqueEmail;
-import com.shopbee.userservice.model.UserRepository;
+import com.shopbee.userservice.dto.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

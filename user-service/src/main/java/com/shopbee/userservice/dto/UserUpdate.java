@@ -1,4 +1,4 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

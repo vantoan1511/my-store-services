@@ -1,7 +1,8 @@
 package com.shopbee.userservice.resource;
 
-import com.shopbee.userservice.model.PageRequest;
-import com.shopbee.userservice.model.*;
+import com.shopbee.userservice.entity.User;
+import com.shopbee.userservice.dto.PageRequest;
+import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
-@Path("/api/users")
+@Path("users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RolesAllowed({Role.Constants.ADMIN_VALUE})

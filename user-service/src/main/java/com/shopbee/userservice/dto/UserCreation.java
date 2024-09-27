@@ -1,4 +1,4 @@
-package com.shopbee.userservice.model;
+package com.shopbee.userservice.dto;
 
 import com.shopbee.userservice.validator.constraint.UniqueEmail;
 import com.shopbee.userservice.validator.constraint.UniqueUsername;

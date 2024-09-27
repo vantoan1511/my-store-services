@@ -1,13 +1,13 @@
 package com.shopbee.userservice.service;
 
-import com.shopbee.userservice.model.ErrorResponse;
+import com.shopbee.userservice.dto.ErrorResponse;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.model.CustomerRegistration;
-import com.shopbee.userservice.model.PasswordUpdate;
-import com.shopbee.userservice.model.PasswordReset;
-import com.shopbee.userservice.model.UserCreation;
-import com.shopbee.userservice.model.UserUpdate;
+import com.shopbee.userservice.dto.CustomerRegistration;
+import com.shopbee.userservice.dto.PasswordUpdate;
+import com.shopbee.userservice.dto.PasswordReset;
+import com.shopbee.userservice.dto.UserCreation;
+import com.shopbee.userservice.dto.UserUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
