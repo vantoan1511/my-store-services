@@ -1,6 +1,5 @@
 package com.shopbee.userservice.exception;
 
-import com.shopbee.userservice.dto.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

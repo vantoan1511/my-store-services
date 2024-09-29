@@ -1,6 +1,5 @@
 package com.shopbee.userservice.exception;
 
-import com.shopbee.userservice.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;

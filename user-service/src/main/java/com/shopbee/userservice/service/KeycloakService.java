@@ -1,6 +1,6 @@
 package com.shopbee.userservice.service;
 
-import com.shopbee.userservice.dto.ErrorResponse;
+import com.shopbee.userservice.exception.ErrorResponse;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
 import com.shopbee.userservice.dto.CustomerRegistration;

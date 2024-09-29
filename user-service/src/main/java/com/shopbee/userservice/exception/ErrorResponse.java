@@ -1,4 +1,4 @@
-package com.shopbee.userservice.dto;
+package com.shopbee.userservice.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
